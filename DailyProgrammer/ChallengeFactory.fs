@@ -4,7 +4,7 @@ open RedditSharp.Things
 
 type TitleRegex = Regex< @"\[[\d\-]+\] Challenge \#(?<Number>\d{1,5}) \[(?<Difficulty>\w+/?\w+)\] (?<Title>.+)">
 
-type ChallengeFactory() =
+type ChallengeFactory private() =
 
     static member private ParseDifficulty(difficulty : string) =
         match difficulty.ToUpperInvariant() with
