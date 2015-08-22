@@ -4,8 +4,6 @@ open RedditSharp.Things
 
 type TitleRegex = Regex< @"\[[\d\-]+\] Challenge \#(?<Number>\d{1,5}) \[(?<Difficulty>\w+/?\w+)\] (?<Title>.+)">
 
-
-
 type ChallengeFactory() =
 
     static member private ParseDifficulty(difficulty : string) =
@@ -19,11 +17,15 @@ type ChallengeFactory() =
         
     static member Create(post : Post) =
         let regexMatch = TitleRegex().Match(post.Title)
+
+        if not regexMatch.Success then None
+        else 
         let challengeNumber = System.Int32.Parse(regexMatch.Number.Value)
         let difficulty = ChallengeFactory.ParseDifficulty(regexMatch.Difficulty.Value)
         let datePosted = new System.DateTimeOffset(post.CreatedUTC)
         let title = regexMatch.Title.Value
         let content = post.SelfText
 
-        Challenge(challengeNumber, difficulty, datePosted, title, content)
+        let challenge = Challenge(challengeNumber, difficulty, datePosted, title, content)
+        Some challenge
     
